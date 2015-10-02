@@ -2,11 +2,13 @@ package gpm.udacity.popularmovies.model;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Created by gmi on 19/08/15.
  */
-public class Movie {
+public class Movie implements Parcelable {
 
     public long id;
     public String title;
@@ -24,6 +26,15 @@ public class Movie {
         this.poster_path = poster_path;
         this.vote_average = vote_average;
         this.release_date = release_date;
+    }
+
+    private Movie(Parcel in) {
+        id = in.readLong();
+        title = in.readString();
+        overview = in.readString();
+        poster_path = in.readString();
+        vote_average = in.readDouble();
+        release_date = in.readString();
     }
 
     public Uri buildPosterUri(String size) {
@@ -81,4 +92,29 @@ public class Movie {
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeLong(id);
+        parcel.writeString(title);
+        parcel.writeString(overview);
+        parcel.writeString(poster_path);
+        parcel.writeDouble(vote_average);
+        parcel.writeString(release_date);
+
+    }
+
+    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 }

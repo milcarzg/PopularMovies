@@ -75,6 +75,11 @@ public class SampleGridViewAdapter extends BaseAdapter {
 
     }
 
+    public ArrayList<Movie> getMovies() {
+        return this.Posters;
+
+    }
+
     @Override
     public long getItemId(int i) {
         return this.Posters.indexOf(i);

@@ -26,13 +26,12 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        if (savedInstanceState == null) {
+        /*if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment, new DetailFragment())
+                    .add(R.id.fragment, new DetailActivityFragment())
                     .commit();
-        }
+        }*/
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -59,6 +58,8 @@ public class DetailActivity extends AppCompatActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
+
+    /*
     public static class DetailFragment extends Fragment {
 
         private static final String LOG_TAG = DetailFragment.class.getName();
@@ -98,6 +99,6 @@ public class DetailActivity extends AppCompatActivity {
         public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         }
 
-    }
+    }*/
 
 }

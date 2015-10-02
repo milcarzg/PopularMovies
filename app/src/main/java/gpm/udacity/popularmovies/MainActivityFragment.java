@@ -40,6 +40,7 @@ public class MainActivityFragment extends Fragment {
     private SampleGridViewAdapter mMovieAdapter;
     private View rootView;
     private ArrayList<String> mPosters = new ArrayList<String>();
+    private ArrayList<Movie> savedMovies = new ArrayList<Movie>();
     private int page = 1;
     private String sort;
     private boolean loadFlag = true;
@@ -61,13 +62,36 @@ public class MainActivityFragment extends Fragment {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList("MOVIES", savedMovies);
+        outState.putString("SORT", sort);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         rootView = inflater.inflate(R.layout.fragment_main, container);
-        sort = getString(R.string.popular);
         mMovieAdapter = new SampleGridViewAdapter(this.getActivity());
         final GridView gridview = (GridView) rootView.findViewById(R.id.gridview_movies);
         gridview.setAdapter(mMovieAdapter);
+
+        if (savedInstanceState == null || !savedInstanceState.containsKey("MOVIES"))
+        {
+            sort = getString(R.string.popular);
+            mMovieAdapter.clear();
+            loadMovies(sort, page);
+        }
+        else
+        {
+            savedMovies = savedInstanceState.getParcelableArrayList("MOVIES");
+            sort = savedInstanceState.getString("SORT");
+            mMovieAdapter.clear();
+            mMovieAdapter.addAll(savedMovies);
+        }
+
+
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -98,16 +122,12 @@ public class MainActivityFragment extends Fragment {
                 }
 
         );
-
-
         return rootView;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        loadMovies(sort, page);
-        //new GetMoviesTask().execute("popularity.desc");
     }
 
     @Override
@@ -134,6 +154,7 @@ public class MainActivityFragment extends Fragment {
         if (id == R.id.action_sort_popular) {
             //Log.w("POPULAR", "pressed");
             mMovieAdapter.clear();
+            savedMovies.clear();
             page = 1;
             sort = getString(R.string.popular);
             loadMovies(sort, page);
@@ -141,6 +162,7 @@ public class MainActivityFragment extends Fragment {
         }
         if (id == R.id.action_sort_rate) {
             mMovieAdapter.clear();
+            savedMovies.clear();
             page = 1;
             sort = getString(R.string.rating);
             loadMovies(sort, page);
@@ -166,6 +188,8 @@ public class MainActivityFragment extends Fragment {
             // so that they can be closed in the finally block.
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
+
+            Log.w("Started", "works");
 
             // Will contain the raw JSON response as a string.
             String moviesJsonStr = null;
@@ -263,7 +287,6 @@ public class MainActivityFragment extends Fragment {
             JSONArray moviesArray = moviesJson.getJSONArray(MOVIES_RESULT);
 
             ArrayList<String> resultStrs = new ArrayList<String>();
-            ArrayList<Movie> resultMovies = new ArrayList<Movie>();
             for(int i = 0; i < moviesArray.length(); i++) {
                 JSONObject movie = moviesArray.getJSONObject(i);
                 int id = movie.getInt(ID);
@@ -274,15 +297,14 @@ public class MainActivityFragment extends Fragment {
                 double vote = movie.getDouble(VOTE_AVERAGE);
 
                 Movie m = new Movie(id,title,overview,posterPath,vote,release);
-                resultMovies.add(m);
+                savedMovies.add(m);
 
                 resultStrs.add(posterPath);
             }
-
             for (String s : resultStrs) {
                 Log.v(LOG_TAG, "Movie Poster: " + s);
             }
-            return resultMovies;
+            return savedMovies;
         }
     }
 }
