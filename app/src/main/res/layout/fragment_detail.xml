@@ -60,7 +60,23 @@
         android:layout_alignRight="@+id/detail_title"
         android:layout_alignEnd="@+id/detail_title" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/detail_trailer_header"
+        android:layout_below="@+id/detail_plot"
+        android:text="Trailers"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="15dp" />
 
+    <GridView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/detail_trailer_header"
+        android:id="@+id/gridview_trailers"
+        android:numColumns="2"
+        android:stretchMode="columnWidth"
+        android:gravity="center"/>
 </RelativeLayout>
 
 

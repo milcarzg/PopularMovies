@@ -30,6 +30,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
+import gpm.udacity.popularmovies.adapters.SampleGridViewAdapter;
 import gpm.udacity.popularmovies.model.Movie;
 
 /**
