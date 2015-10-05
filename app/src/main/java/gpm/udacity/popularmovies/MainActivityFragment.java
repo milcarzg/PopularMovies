@@ -40,6 +40,7 @@ public class MainActivityFragment extends Fragment {
 
     private SampleGridViewAdapter mMovieAdapter;
     private View rootView;
+    private View detailView;
     private ArrayList<String> mPosters = new ArrayList<String>();
     private ArrayList<Movie> savedMovies = new ArrayList<Movie>();
     private int page = 1;
@@ -74,6 +75,7 @@ public class MainActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         rootView = inflater.inflate(R.layout.fragment_main, container);
+        //detailView = inflater.inflate(R.layout.fragment_detail, container);
         mMovieAdapter = new SampleGridViewAdapter(this.getActivity());
         final GridView gridview = (GridView) rootView.findViewById(R.id.gridview_movies);
         gridview.setAdapter(mMovieAdapter);
@@ -96,10 +98,16 @@ public class MainActivityFragment extends Fragment {
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                DetailActivityFragment detailFrag = (DetailActivityFragment) getFragmentManager()
+                        .findFragmentById(R.id.fragment_detail);
                 Movie movie = mMovieAdapter.getMovie(i);
-                Intent intent = new Intent(getActivity(), DetailActivity.class).putExtra("MOVIE", movie.toBundle());
-                Toast.makeText(getActivity(), movie.title, Toast.LENGTH_SHORT).show();
-                startActivity(intent);
+                if (detailFrag == null) {
+                    Intent intent = new Intent(getActivity(), DetailActivity.class).putExtra("MOVIE", movie.toBundle());
+                    //Toast.makeText(getActivity(), movie.title, Toast.LENGTH_SHORT).show();
+                    startActivity(intent);
+                } else {
+                    detailFrag.updateContent(movie);
+                }
             }
         });
         gridview.setOnScrollListener(

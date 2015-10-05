@@ -42,10 +42,18 @@ public class DetailActivityFragment extends Fragment {
     private static final String LOG_TAG = DetailActivityFragment.class.getName();
 
     private Bundle mMovieBundle;
+    private View rootView;
     private Movie mMovie;
     private TrailerGridViewAdapter mTrailerAdapter;
 
     private ArrayList<Trailer> savedTrailers = new ArrayList<Trailer>();
+
+    private TextView title;
+    private TextView rating;
+    private TextView release;
+    private TextView plot;
+    private ImageView poster;
+
 
     public DetailActivityFragment() {
         setHasOptionsMenu(true);
@@ -55,34 +63,32 @@ public class DetailActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Intent intent = getActivity().getIntent();
-        View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+        rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         if(intent != null && intent.hasExtra("MOVIE"))
         {
             mTrailerAdapter = new TrailerGridViewAdapter(this.getActivity());
-            final GridView gridview = (GridView) rootView.findViewById(R.id.gridview_trailers);
+            GridView gridview = (GridView) rootView.findViewById(R.id.gridview_trailers);
             gridview.setAdapter(mTrailerAdapter);
-
 
             mMovieBundle = intent.getBundleExtra("MOVIE");
             mMovie = new Movie(mMovieBundle);
 
-            ((TextView) rootView.findViewById(R.id.detail_title)).setText(mMovie.title);
-            ((TextView) rootView.findViewById(R.id.detail_rating)).setText(mMovie.getRating());
-            ((TextView) rootView.findViewById(R.id.detail_release)).setText(mMovie.release_date);
-            ((TextView) rootView.findViewById(R.id.detail_plot)).setText(mMovie.overview);
-            ImageView poster = ((ImageView) rootView.findViewById(R.id.detail_poster));
+            this.title = ((TextView) rootView.findViewById(R.id.detail_title));
+            this.title.setText(mMovie.title);
+            this.rating = ((TextView) rootView.findViewById(R.id.detail_rating));
+            this.rating.setText(mMovie.getRating());
+            this.release = ((TextView) rootView.findViewById(R.id.detail_release));
+            this.release.setText(mMovie.release_date);
+            this.plot = ((TextView) rootView.findViewById(R.id.detail_plot));
+            this.plot.setText(mMovie.overview);
+            this.poster = ((ImageView) rootView.findViewById(R.id.detail_poster));
 
             mTrailerAdapter.clear();
             loadTrailers(mMovie.id);
 
-
             Glide.with(getActivity())
                     .load(mMovie.buildPosterUri("w185"))
                     .into(poster);
-
-
-
-
 
         }
         return rootView;
@@ -95,6 +101,30 @@ public class DetailActivityFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    }
+
+    public void updateContent(Movie movie)
+    {
+        this.title = ((TextView) rootView.findViewById(R.id.detail_title));
+        this.title.setText(movie.title);
+        this.rating = ((TextView) rootView.findViewById(R.id.detail_rating));
+        this.rating.setText(movie.getRating());
+        this.release = ((TextView) rootView.findViewById(R.id.detail_release));
+        this.release.setText(movie.release_date);
+        this.plot = ((TextView) rootView.findViewById(R.id.detail_plot));
+        this.plot.setText(movie.overview);
+        mTrailerAdapter = new TrailerGridViewAdapter(this.getActivity());
+        GridView gridview = (GridView) rootView.findViewById(R.id.gridview_trailers);
+        gridview.setAdapter(mTrailerAdapter);
+        mTrailerAdapter.clear();
+        savedTrailers.clear();
+        loadTrailers(movie.id);
+
+        this.poster = ((ImageView) rootView.findViewById(R.id.detail_poster));
+
+        Glide.with(getActivity())
+                .load(movie.buildPosterUri("w185"))
+                .into(poster);
     }
 
 
@@ -115,7 +145,7 @@ public class DetailActivityFragment extends Fragment {
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
 
-            Log.w("Started", "works");
+            Log.w("Trailers", "works");
 
             // Will contain the raw JSON response as a string.
             String trailersJsonStr = null;
@@ -176,7 +206,6 @@ public class DetailActivityFragment extends Fragment {
                     }
                 }
             }
-
 
             try {
                 trailers = getTrailersDataFromJson(trailersJsonStr);
