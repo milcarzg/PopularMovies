@@ -68,10 +68,19 @@
 
     <GridView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/detail_trailer_header"
         android:id="@+id/gridview_trailers"
         android:numColumns="2"
+        android:stretchMode="columnWidth"
+        android:gravity="center"/>
+
+    <GridView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/gridview_trailers"
+        android:id="@+id/gridview_reviews"
+        android:numColumns="1"
         android:stretchMode="columnWidth"
         android:gravity="center"/>
 </RelativeLayout>

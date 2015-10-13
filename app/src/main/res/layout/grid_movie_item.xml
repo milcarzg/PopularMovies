@@ -1,8 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ImageView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/grid_movie_item_image"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
 
-</ImageView>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relVideo"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    >
+    <ImageView
+
+        android:id="@+id/grid_movie_item_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true">
+
+    </ImageView>
+
+    <ImageView
+        android:id="@+id/imgPlayVideo"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerInParent="true"
+        android:adjustViewBounds="true"
+        android:src="@drawable/play" />
+</RelativeLayout>

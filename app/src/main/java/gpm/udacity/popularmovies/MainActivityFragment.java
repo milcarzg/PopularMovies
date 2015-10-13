@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
 
 
 import org.json.JSONArray;
@@ -30,7 +29,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-import gpm.udacity.popularmovies.adapters.SampleGridViewAdapter;
+import gpm.udacity.popularmovies.adapters.MovieGridViewAdapter;
 import gpm.udacity.popularmovies.model.Movie;
 
 /**
@@ -38,10 +37,8 @@ import gpm.udacity.popularmovies.model.Movie;
  */
 public class MainActivityFragment extends Fragment {
 
-    private SampleGridViewAdapter mMovieAdapter;
+    private MovieGridViewAdapter mMovieAdapter;
     private View rootView;
-    private View detailView;
-    private ArrayList<String> mPosters = new ArrayList<String>();
     private ArrayList<Movie> savedMovies = new ArrayList<Movie>();
     private int page = 1;
     private String sort;
@@ -76,7 +73,7 @@ public class MainActivityFragment extends Fragment {
 
         rootView = inflater.inflate(R.layout.fragment_main, container);
         //detailView = inflater.inflate(R.layout.fragment_detail, container);
-        mMovieAdapter = new SampleGridViewAdapter(this.getActivity());
+        mMovieAdapter = new MovieGridViewAdapter(this.getActivity());
         final GridView gridview = (GridView) rootView.findViewById(R.id.gridview_movies);
         gridview.setAdapter(mMovieAdapter);
 
@@ -114,9 +111,7 @@ public class MainActivityFragment extends Fragment {
                 new AbsListView.OnScrollListener() {
                     @Override
                     public void onScrollStateChanged(AbsListView view, int scrollState) {
-
                     }
-
                     @Override
                     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                         int lastInScreen = firstVisibleItem + visibleItemCount;
@@ -129,7 +124,6 @@ public class MainActivityFragment extends Fragment {
                         }
                     }
                 }
-
         );
         return rootView;
     }
@@ -146,6 +140,7 @@ public class MainActivityFragment extends Fragment {
 
     public void loadMovies(String sort, int page)
     {
+        Log.w("PAGE",String.valueOf(page));
         String[] params = new String[2];
         params[0] = sort;
         params[1] = String.valueOf(page);
@@ -260,7 +255,6 @@ public class MainActivityFragment extends Fragment {
                     }
                 }
             }
-
             //Log.w("JSon", moviesJsonStr);
 
             try {
@@ -275,6 +269,7 @@ public class MainActivityFragment extends Fragment {
             if (posters != null)
             {
                 mMovieAdapter.addAll(posters);
+                savedMovies.addAll(posters);
                 loadFlag = false;
             }
 
@@ -294,6 +289,7 @@ public class MainActivityFragment extends Fragment {
 
             JSONObject moviesJson = new JSONObject(moviesJsonStr);
             JSONArray moviesArray = moviesJson.getJSONArray(MOVIES_RESULT);
+            ArrayList<Movie> loaded = new ArrayList<Movie>();
 
             ArrayList<String> resultStrs = new ArrayList<String>();
             for(int i = 0; i < moviesArray.length(); i++) {
@@ -306,14 +302,13 @@ public class MainActivityFragment extends Fragment {
                 double vote = movie.getDouble(VOTE_AVERAGE);
 
                 Movie m = new Movie(id,title,overview,posterPath,vote,release);
-                savedMovies.add(m);
-
+                loaded.add(m);
                 resultStrs.add(posterPath);
             }
             for (String s : resultStrs) {
                 Log.v(LOG_TAG, "Movie Poster: " + s);
             }
-            return savedMovies;
+            return loaded;
         }
     }
 }

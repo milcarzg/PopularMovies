@@ -73,12 +73,21 @@
 
         <GridView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/detail_trailer_header"
             android:layout_alignLeft="@+id/detail_rating"
             android:layout_alignStart="@+id/detail_rating"
             android:id="@+id/gridview_trailers"
             android:numColumns="4"
+            android:stretchMode="columnWidth"
+            android:gravity="center"/>
+
+        <GridView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/gridview_trailers"
+            android:id="@+id/gridview_reviews"
+            android:numColumns="1"
             android:stretchMode="columnWidth"
             android:gravity="center"/>
 

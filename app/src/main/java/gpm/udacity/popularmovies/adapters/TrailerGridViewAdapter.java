@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -36,24 +37,24 @@ public class TrailerGridViewAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        //Log.v("ADAPTER", "ADAPTER");
+        View gridView;
         ImageView imageView;
-        if (convertView == null) {
-            // if it's not recycled, initialize some attributes
-            imageView = new ImageView(context);
-            imageView.setLayoutParams(new GridView.LayoutParams(mWidth, mHeight));
-            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        } else {
-            imageView = (ImageView) convertView;
-        }
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
+            // if it's not recycled, initialize some attributes
+            gridView = new ImageView(context);
+            gridView = inflater.inflate(R.layout.grid_movie_item, null);
+            gridView.setLayoutParams(new GridView.LayoutParams(mWidth, mHeight));
+            imageView = (ImageView)gridView.findViewById(R.id.grid_movie_item_image);
+
+            //imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         String videoUrl = "http://img.youtube.com/vi/"+Trailers.get(position).getPath()+"/default.jpg";
         Glide.with(context)
                 .load(videoUrl)
                 .into(imageView);
 
-
-        return imageView;
+        return gridView;
     }
 
 
