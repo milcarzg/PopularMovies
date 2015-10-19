@@ -1,0 +1,103 @@
+<ScrollView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="gpm.udacity.popularmovies.DetailActivityFragment">
+
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/detail_title"
+        android:layout_width="wrap_content"
+        android:layout_height="75dp"
+        android:textSize="30sp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="250dp"
+        android:id="@+id/detail_poster"
+        android:layout_below="@+id/detail_title"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/detail_release"
+        android:layout_below="@+id/detail_title"
+        android:layout_toRightOf="@+id/detail_poster"
+        android:layout_toEndOf="@+id/detail_poster"
+        android:paddingTop="20dp"
+        android:layout_marginLeft="33dp"
+        android:layout_marginStart="33dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/detail_rating"
+        android:layout_below="@+id/detail_release"
+        android:layout_alignLeft="@+id/detail_release"
+        android:layout_alignStart="@+id/detail_release"
+        android:layout_marginTop="25dp" />
+
+    <Button
+        android:layout_width="31dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="15dp"
+        android:id="@+id/detail_favourite"
+        android:background="@drawable/empty"
+        android:layout_below="@+id/detail_rating"
+        android:layout_alignLeft="@+id/detail_release"
+        android:layout_alignStart="@+id/detail_release"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:id="@+id/detail_plot"
+        android:layout_below="@+id/detail_poster"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignRight="@+id/detail_title"
+        android:layout_alignEnd="@+id/detail_title" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/detail_trailer_header"
+        android:layout_below="@+id/detail_plot"
+        android:text="Trailers"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="15dp" />
+
+    <gpm.udacity.popularmovies.helpers.ExpandableGridView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/detail_trailer_header"
+        android:id="@+id/gridview_trailers"
+        android:numColumns="2"
+        android:verticalSpacing="10dp"
+        android:stretchMode="columnWidth"
+        android:isScrollContainer="false"
+        android:gravity="center"/>
+
+    <gpm.udacity.popularmovies.helpers.ExpandableGridView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/gridview_trailers"
+        android:id="@+id/gridview_reviews"
+        android:numColumns="1"
+        android:verticalSpacing="10dp"
+        android:stretchMode="columnWidth"
+        android:isScrollContainer="false"
+        android:gravity="center"/>
+</RelativeLayout>
+
+
+    </ScrollView>

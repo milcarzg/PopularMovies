@@ -1,6 +1,7 @@
-package gpm.udacity.popularmovies;
+package gpm.udacity.popularmovies.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -11,18 +12,19 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
+import gpm.udacity.popularmovies.R;
 import gpm.udacity.popularmovies.model.Movie;
 
 /**
  * Created by gmi on 19/08/15.
  */
-public class SampleGridViewAdapter extends BaseAdapter {
+public class MovieGridViewAdapter extends BaseAdapter {
     private final Context context;
     private final ArrayList<Movie> Posters;
     private final int mHeight;
     private final int mWidth;
 
-    public SampleGridViewAdapter(Context context) {
+    public MovieGridViewAdapter(Context context) {
         this.context = context;
         this.Posters = new ArrayList<Movie>();
         mHeight = Math.round(context.getResources().getDimension(R.dimen.poster_height));
@@ -31,7 +33,6 @@ public class SampleGridViewAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        //Log.v("ADAPTER", "ADAPTER");
         ImageView imageView;
         if (convertView == null) {
             // if it's not recycled, initialize some attributes

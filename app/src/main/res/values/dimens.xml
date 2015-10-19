@@ -4,4 +4,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="poster_width">154dp</dimen>
     <dimen name="poster_height">231dp</dimen>
+    <dimen name="trailer_width">112dp</dimen>
+    <dimen name="trailer_height">63dp</dimen>
 </resources>
