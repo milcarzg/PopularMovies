@@ -11,4 +11,8 @@
         android:id="@+id/action_sort_rate"
         android:title="@string/action_sort_rate"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_sort_fav"
+        android:title="@string/action_sort_fav"
+        app:showAsAction="never" />
 </menu>

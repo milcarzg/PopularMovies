@@ -8,7 +8,7 @@ import android.widget.GridView;
 /**
  * Created by gmi on 13/10/15.
  *
- * found on stackoverflow to
+ * found on stackoverflow to hack gridview collapsing in scrollview
  *
  */public class ExpandableGridView extends GridView {
 
@@ -41,8 +41,6 @@ import android.widget.GridView;
         // HACK! TAKE THAT ANDROID!
         if (isExpanded())
         {
-            // Calculate entire height by providing a very large height hint.
-            // View.MEASURED_SIZE_MASK represents the largest height possible.
             int expandSpec = MeasureSpec.makeMeasureSpec(MEASURED_SIZE_MASK,
                     MeasureSpec.AT_MOST);
             super.onMeasure(widthMeasureSpec, expandSpec);

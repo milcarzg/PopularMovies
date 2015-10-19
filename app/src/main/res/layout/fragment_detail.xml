@@ -50,6 +50,16 @@
             android:layout_alignStart="@+id/detail_release"
             android:layout_marginTop="25dp" />
 
+        <Button
+            android:layout_width="31dp"
+            android:layout_height="30dp"
+            android:id="@+id/detail_favourite"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/empty"
+            android:layout_below="@+id/detail_rating"
+            android:layout_alignLeft="@+id/detail_release"
+            android:layout_alignStart="@+id/detail_release"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

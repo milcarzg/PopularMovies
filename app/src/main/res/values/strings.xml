@@ -5,6 +5,7 @@
     <string name="action_settings">Settings</string>
     <string name="action_sort_popular">Popular</string>
     <string name="action_sort_rate">High Rated</string>
+    <string name="action_sort_fav">Favourite</string>
 
     <string name="movie_db_key">931c86940f996de9859dc238f64234d8</string>
     <string name="title_activity_main">MainActivity</string>

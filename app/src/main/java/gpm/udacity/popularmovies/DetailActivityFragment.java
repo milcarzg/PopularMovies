@@ -12,7 +12,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.GridView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -32,6 +32,7 @@ import java.util.ArrayList;
 
 import gpm.udacity.popularmovies.adapters.ReviewGridViewAdapter;
 import gpm.udacity.popularmovies.adapters.TrailerGridViewAdapter;
+import gpm.udacity.popularmovies.helpers.DatabaseManager;
 import gpm.udacity.popularmovies.helpers.ExpandableGridView;
 import gpm.udacity.popularmovies.model.Movie;
 import gpm.udacity.popularmovies.model.Review;
@@ -40,7 +41,7 @@ import gpm.udacity.popularmovies.model.Trailer;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class DetailActivityFragment extends Fragment {
+public class DetailActivityFragment extends Fragment implements View.OnClickListener {
 
     private static final String LOG_TAG = DetailActivityFragment.class.getName();
 
@@ -49,6 +50,9 @@ public class DetailActivityFragment extends Fragment {
     private Movie mMovie;
     private TrailerGridViewAdapter mTrailerAdapter;
     private ReviewGridViewAdapter mReviewAdapter;
+    private Button favourite;
+
+    private DatabaseManager dbManager;
 
     private ArrayList<Trailer> savedTrailers = new ArrayList<Trailer>();
     private ArrayList<Review> savedReviews = new ArrayList<Review>();
@@ -69,6 +73,7 @@ public class DetailActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         Intent intent = getActivity().getIntent();
         rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+        dbManager = DatabaseManager.create(getActivity());
         if(intent != null && intent.hasExtra("MOVIE"))
         {
             mTrailerAdapter = new TrailerGridViewAdapter(this.getActivity());
@@ -93,6 +98,18 @@ public class DetailActivityFragment extends Fragment {
             mMovieBundle = intent.getBundleExtra("MOVIE");
             mMovie = new Movie(mMovieBundle);
 
+
+            this.favourite = (Button) rootView.findViewById(R.id.detail_favourite);
+            this.favourite.setOnClickListener(this);
+
+            Log.w("INDEX", String.valueOf(dbManager.getMovies()));
+            for(int i = 0; i < dbManager.getMovies().size(); i++) 
+            {
+                if (dbManager.getMovies().get(i).id == mMovie.id) {
+                    setFavourite(dbManager.getMovies().get(i));
+                }
+                else { setFavourite(mMovie);}
+            }
             this.title = ((TextView) rootView.findViewById(R.id.detail_title));
             this.title.setText(mMovie.title);
             this.rating = ((TextView) rootView.findViewById(R.id.detail_rating));
@@ -133,6 +150,9 @@ public class DetailActivityFragment extends Fragment {
     {
         this.title = ((TextView) rootView.findViewById(R.id.detail_title));
         this.title.setText(movie.title);
+        this.favourite = (Button) rootView.findViewById(R.id.detail_favourite);
+        this.favourite.setOnClickListener(this);
+        setFavourite(mMovie);
         this.rating = ((TextView) rootView.findViewById(R.id.detail_rating));
         this.rating.setText(movie.getRating());
         this.release = ((TextView) rootView.findViewById(R.id.detail_release));
@@ -168,6 +188,18 @@ public class DetailActivityFragment extends Fragment {
         Glide.with(getActivity())
                 .load(movie.buildPosterUri("w185"))
                 .into(poster);
+    }
+
+    @Override
+    public void onClick(View view) {
+        if(mMovie.favourite == false) {
+            mMovie.setFavourite(true);
+            dbManager.add(mMovie);
+        } else {
+            mMovie.setFavourite(false);
+            dbManager.remove(mMovie);
+        }
+        setFavourite(mMovie);
     }
 
 
@@ -431,5 +463,16 @@ public class DetailActivityFragment extends Fragment {
             return loadedReviews;
         }
     }
+
+
+    public void setFavourite(Movie movie)
+    {
+        if (movie.favourite == false) {
+            this.favourite.setBackground(getResources().getDrawable(R.drawable.empty));
+        } else {
+            this.favourite.setBackground(getResources().getDrawable(R.drawable.star));
+        }
+    }
+
 }
 

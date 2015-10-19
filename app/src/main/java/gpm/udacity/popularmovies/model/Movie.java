@@ -16,16 +16,18 @@ public class Movie implements Parcelable {
     public String poster_path;
     public double vote_average;
     public String release_date;
+    public Boolean favourite;
 
     public Movie(long id,
                  String title, String overview, String poster_path,
-                 double vote_average, String release_date) {
+                 double vote_average, String release_date, Boolean favourite) {
         this.id = id;
         this.title = title;
         this.overview = overview;
         this.poster_path = poster_path;
         this.vote_average = vote_average;
         this.release_date = release_date;
+        this.favourite = favourite;
     }
 
     private Movie(Parcel in) {
@@ -35,6 +37,7 @@ public class Movie implements Parcelable {
         poster_path = in.readString();
         vote_average = in.readDouble();
         release_date = in.readString();
+        favourite = in.readByte() != 0; ;
     }
 
     public Uri buildPosterUri(String size) {
@@ -55,7 +58,8 @@ public class Movie implements Parcelable {
                 bundle.getString("OVERVIEW"),
                 bundle.getString("POSTER"),
                 bundle.getDouble("VOTE"),
-                bundle.getString("RELEASE")
+                bundle.getString("RELEASE"),
+                bundle.getBoolean("FAVOURITE")
         );
     }
 
@@ -68,6 +72,7 @@ public class Movie implements Parcelable {
         bundle.putString("POSTER", poster_path);
         bundle.putDouble("VOTE", vote_average);
         bundle.putString("RELEASE", release_date);
+        bundle.putBoolean("FAVOURITE", favourite);
 
 
         return bundle;
@@ -91,6 +96,10 @@ public class Movie implements Parcelable {
         this.poster_path = uri;
     }
 
+    public void setFavourite(Boolean favourite) { this.favourite = favourite; }
+
+    public Boolean getFavourite() { return favourite; }
+
 
     @Override
     public int describeContents() {
@@ -105,6 +114,7 @@ public class Movie implements Parcelable {
         parcel.writeString(poster_path);
         parcel.writeDouble(vote_average);
         parcel.writeString(release_date);
+        parcel.writeByte((byte) (favourite ? 1 : 0));
 
     }
 

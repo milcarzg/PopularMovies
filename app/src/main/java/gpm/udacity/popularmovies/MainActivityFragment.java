@@ -1,8 +1,10 @@
 package gpm.udacity.popularmovies;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,6 +32,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import gpm.udacity.popularmovies.adapters.MovieGridViewAdapter;
+import gpm.udacity.popularmovies.helpers.DatabaseManager;
 import gpm.udacity.popularmovies.model.Movie;
 
 /**
@@ -39,17 +42,20 @@ public class MainActivityFragment extends Fragment {
 
     private MovieGridViewAdapter mMovieAdapter;
     private View rootView;
+    private DatabaseManager dbManager;
     private ArrayList<Movie> savedMovies = new ArrayList<Movie>();
     private int page = 1;
     private String sort;
     private boolean loadFlag = true;
 
+    private SharedPreferences mPrefs;
+
+
     public MainActivityFragment() {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
@@ -61,17 +67,34 @@ public class MainActivityFragment extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList("MOVIES", savedMovies);
-        outState.putString("SORT", sort);
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putParcelableArrayList("MOVIES", savedMovies);
+        savedInstanceState.putString("SORT", sort);
+    }
+
+    private void loadSavedPreferences()
+    {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        sort = sharedPreferences.getString("SORT",null);
+    }
+
+    private void savePreferences(String key, String value) {
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(key, value);
+        editor.commit();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        loadSavedPreferences();
         rootView = inflater.inflate(R.layout.fragment_main, container);
+        dbManager = DatabaseManager.create(getActivity());
         //detailView = inflater.inflate(R.layout.fragment_detail, container);
         mMovieAdapter = new MovieGridViewAdapter(this.getActivity());
         final GridView gridview = (GridView) rootView.findViewById(R.id.gridview_movies);
@@ -79,12 +102,22 @@ public class MainActivityFragment extends Fragment {
 
         if (savedInstanceState == null || !savedInstanceState.containsKey("MOVIES"))
         {
-            sort = getString(R.string.popular);
+            Log.w("SavedInstance", "NOPE");
+            loadSavedPreferences();
+            if (sort == null)
+            {
+                sort = getString(R.string.popular);
+            }
+            if (sort == "favourite")
+            {
+                page = 0;
+            }
             mMovieAdapter.clear();
             loadMovies(sort, page);
         }
         else
         {
+            Log.w("SavedInstance", "HERE");
             savedMovies = savedInstanceState.getParcelableArrayList("MOVIES");
             sort = savedInstanceState.getString("SORT");
             mMovieAdapter.clear();
@@ -112,6 +145,7 @@ public class MainActivityFragment extends Fragment {
                     @Override
                     public void onScrollStateChanged(AbsListView view, int scrollState) {
                     }
+
                     @Override
                     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                         int lastInScreen = firstVisibleItem + visibleItemCount;
@@ -140,11 +174,17 @@ public class MainActivityFragment extends Fragment {
 
     public void loadMovies(String sort, int page)
     {
-        Log.w("PAGE",String.valueOf(page));
-        String[] params = new String[2];
-        params[0] = sort;
-        params[1] = String.valueOf(page);
-        new GetMoviesTask().execute(params);
+        if (page > 0)
+        {
+            Log.w("PAGE",String.valueOf(page));
+            String[] params = new String[2];
+            params[0] = sort;
+            params[1] = String.valueOf(page);
+            new GetMoviesTask().execute(params);
+        }
+        else {
+            mMovieAdapter.addAll(dbManager.getMovies());
+        }
     }
 
     @Override
@@ -161,6 +201,7 @@ public class MainActivityFragment extends Fragment {
             savedMovies.clear();
             page = 1;
             sort = getString(R.string.popular);
+            savePreferences("SORT",sort);
             loadMovies(sort, page);
             //new GetMoviesTask().execute(getString(R.string.popular));
         }
@@ -169,8 +210,18 @@ public class MainActivityFragment extends Fragment {
             savedMovies.clear();
             page = 1;
             sort = getString(R.string.rating);
+            savePreferences("SORT",sort);
             loadMovies(sort, page);
             //new GetMoviesTask().execute(getString(R.string.rating));
+        }
+        if (id == R.id.action_sort_fav)
+        {
+            mMovieAdapter.clear();
+            sort = "favourite";
+            savePreferences("SORT",sort);
+            savedMovies.clear();
+            loadMovies(sort,0);
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -193,7 +244,7 @@ public class MainActivityFragment extends Fragment {
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
 
-            Log.w("Started", "works");
+            Log.w("Started", "Get Movies");
 
             // Will contain the raw JSON response as a string.
             String moviesJsonStr = null;
@@ -301,13 +352,13 @@ public class MainActivityFragment extends Fragment {
                 String release = movie.getString(RELEASE);
                 double vote = movie.getDouble(VOTE_AVERAGE);
 
-                Movie m = new Movie(id,title,overview,posterPath,vote,release);
+                Movie m = new Movie(id,title,overview,posterPath,vote,release,false);
                 loaded.add(m);
                 resultStrs.add(posterPath);
             }
-            for (String s : resultStrs) {
+            /*for (String s : resultStrs) {
                 Log.v(LOG_TAG, "Movie Poster: " + s);
-            }
+            }*/
             return loaded;
         }
     }
