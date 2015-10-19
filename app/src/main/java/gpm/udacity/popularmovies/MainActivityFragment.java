@@ -82,7 +82,6 @@ public class MainActivityFragment extends Fragment {
     private void savePreferences(String key, String value) {
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(key, value);
         editor.commit();
@@ -104,6 +103,7 @@ public class MainActivityFragment extends Fragment {
         {
             Log.w("SavedInstance", "NOPE");
             loadSavedPreferences();
+            Log.w("SavedInstance", sort);
             if (sort == null)
             {
                 sort = getString(R.string.popular);
@@ -120,6 +120,18 @@ public class MainActivityFragment extends Fragment {
             Log.w("SavedInstance", "HERE");
             savedMovies = savedInstanceState.getParcelableArrayList("MOVIES");
             sort = savedInstanceState.getString("SORT");
+            if (savedMovies.size() == 0)
+            {
+                if (sort == null)
+                {
+                    sort = getString(R.string.popular);
+                }
+                if (sort == "favourite")
+                {
+                    page = 0;
+                }
+                loadMovies(sort,page);
+            }
             mMovieAdapter.clear();
             mMovieAdapter.addAll(savedMovies);
         }
@@ -145,7 +157,6 @@ public class MainActivityFragment extends Fragment {
                     @Override
                     public void onScrollStateChanged(AbsListView view, int scrollState) {
                     }
-
                     @Override
                     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                         int lastInScreen = firstVisibleItem + visibleItemCount;
@@ -184,6 +195,7 @@ public class MainActivityFragment extends Fragment {
         }
         else {
             mMovieAdapter.addAll(dbManager.getMovies());
+            savedMovies.addAll(dbManager.getMovies());
         }
     }
 

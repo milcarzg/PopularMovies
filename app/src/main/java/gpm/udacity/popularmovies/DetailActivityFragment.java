@@ -52,6 +52,8 @@ public class DetailActivityFragment extends Fragment implements View.OnClickList
     private ReviewGridViewAdapter mReviewAdapter;
     private Button favourite;
 
+    private ArrayList<Movie> dataMovies = new ArrayList<Movie>();
+
     private DatabaseManager dbManager;
 
     private ArrayList<Trailer> savedTrailers = new ArrayList<Trailer>();
@@ -98,17 +100,20 @@ public class DetailActivityFragment extends Fragment implements View.OnClickList
             mMovieBundle = intent.getBundleExtra("MOVIE");
             mMovie = new Movie(mMovieBundle);
 
-
             this.favourite = (Button) rootView.findViewById(R.id.detail_favourite);
             this.favourite.setOnClickListener(this);
 
-            Log.w("INDEX", String.valueOf(dbManager.getMovies()));
-            for(int i = 0; i < dbManager.getMovies().size(); i++) 
+            dataMovies = dbManager.getMovies();
+            setFavourite(mMovie);
+            for(int i = 0; i < dataMovies.size(); i++)
             {
-                if (dbManager.getMovies().get(i).id == mMovie.id) {
-                    setFavourite(dbManager.getMovies().get(i));
+                Log.w("HERE", dataMovies.get(i).title);
+                Log.w("HERE", mMovie.title);
+                if (dataMovies.get(i).title.contentEquals(mMovie.title)) {
+                    Log.w("HERE1", dataMovies.get(i).toString());
+                    setFavourite(dataMovies.get(i));
                 }
-                else { setFavourite(mMovie);}
+                else{}
             }
             this.title = ((TextView) rootView.findViewById(R.id.detail_title));
             this.title.setText(mMovie.title);
@@ -152,7 +157,19 @@ public class DetailActivityFragment extends Fragment implements View.OnClickList
         this.title.setText(movie.title);
         this.favourite = (Button) rootView.findViewById(R.id.detail_favourite);
         this.favourite.setOnClickListener(this);
+        dataMovies = dbManager.getMovies();
+        Log.w("MOVIES", dataMovies.toString());
         setFavourite(mMovie);
+        for(int i = 0; i < dataMovies.size(); i++)
+        {
+            Log.w("HERE", dataMovies.get(i).title);
+            Log.w("HERE", mMovie.title);
+            if (dataMovies.get(i).title.contentEquals(mMovie.title)) {
+                Log.w("HERE1", dataMovies.get(i).toString());
+                setFavourite(dataMovies.get(i));
+            }
+            else {}
+        }
         this.rating = ((TextView) rootView.findViewById(R.id.detail_rating));
         this.rating.setText(movie.getRating());
         this.release = ((TextView) rootView.findViewById(R.id.detail_release));
